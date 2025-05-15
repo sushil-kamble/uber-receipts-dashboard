@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error("Google OAuth error:", error);
       return NextResponse.redirect(
-        new URL(`/receipts?error=${encodeURIComponent(error)}`, request.url)
+        new URL(`/?error=${encodeURIComponent(error)}`, request.url)
       );
     }
 
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     if (!code) {
       console.error("Missing code parameter");
       return NextResponse.redirect(
-        new URL("/receipts?error=Missing%20authorization%20code", request.url)
+        new URL("/?error=Missing%20authorization%20code", request.url)
       );
     }
 
@@ -60,14 +60,14 @@ export async function GET(request: NextRequest) {
 
     // Redirect back to the receipts page with a success message
     return NextResponse.redirect(
-      new URL("/receipts?success=Gmail%20connected%20successfully", request.url)
+      new URL("/?success=Gmail%20connected%20successfully", request.url)
     );
   } catch (error: any) {
     console.error("Gmail callback error:", error);
     // Redirect back to the receipts page with an error message
     return NextResponse.redirect(
       new URL(
-        `/receipts?error=${encodeURIComponent(
+        `/?error=${encodeURIComponent(
           error.message || "Failed to connect Gmail"
         )}`,
         request.url

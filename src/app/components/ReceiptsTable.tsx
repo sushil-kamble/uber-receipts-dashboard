@@ -28,8 +28,9 @@ export default function ReceiptsTable({
     maxLength: number = 34
   ): string => {
     if (!text) return "";
-    return text.length > maxLength
-      ? `${text.substring(0, maxLength)}...`
+    const mobileMaxLength = window.innerWidth < 640 ? 20 : maxLength;
+    return text.length > mobileMaxLength
+      ? `${text.substring(0, mobileMaxLength)}...`
       : text;
   };
 
@@ -93,54 +94,56 @@ export default function ReceiptsTable({
   // Loading state UI with skeleton loader
   if (isLoading) {
     return (
-      <div className="overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">
-                <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
-              </TableHead>
-              {columns.map((column) => (
-                <TableHead key={column.key}>
-                  <div className="h-4 bg-muted rounded animate-pulse w-24"></div>
-                </TableHead>
-              ))}
-              <TableHead className="text-right">
-                <div className="h-4 bg-muted rounded animate-pulse w-20 ml-auto"></div>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[1, 2, 3, 4, 5].map((index) => (
-              <TableRow key={index}>
-                <TableCell>
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="min-w-full inline-block align-middle">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">
                   <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-20 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-32 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-32 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="h-8 w-24 bg-muted rounded animate-pulse ml-auto"></div>
-                </TableCell>
+                </TableHead>
+                {columns.map((column) => (
+                  <TableHead key={column.key}>
+                    <div className="h-4 bg-muted rounded animate-pulse w-24"></div>
+                  </TableHead>
+                ))}
+                <TableHead className="text-right">
+                  <div className="h-4 bg-muted rounded animate-pulse w-20 ml-auto"></div>
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {[1, 2, 3, 4, 5].map((index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-20 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-32 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-32 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="h-8 w-24 bg-muted rounded animate-pulse ml-auto"></div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     );
   }
@@ -162,82 +165,90 @@ export default function ReceiptsTable({
   }
 
   return (
-    <div className="overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">
-              <input
-                type="checkbox"
-                className="h-4 w-4"
-                checked={allSelected}
-                onChange={handleSelectAllToggle}
-              />
-            </TableHead>
-            {columns.map((column) => (
-              <TableHead
-                key={column.key}
-                className={column.sortable ? "cursor-pointer select-none" : ""}
-                onClick={
-                  column.sortable
-                    ? () => handleSortClick(column.key)
-                    : undefined
-                }
-              >
-                <div className="flex items-center">
-                  {column.name}
-                  {column.sortable && getSortDirectionIcon(column.key)}
-                </div>
+    <div className="overflow-x-auto -mx-4 sm:mx-0">
+      <div className="min-w-full inline-block align-middle px-4 sm:px-0">
+        <Table className="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 cursor-pointer touch-manipulation"
+                  checked={allSelected}
+                  onChange={handleSelectAllToggle}
+                />
               </TableHead>
-            ))}
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {receipts.map((receipt) => {
-            const isSelected = selectedReceipts.includes(receipt.id);
+              {columns.map((column) => (
+                <TableHead
+                  key={column.key}
+                  className={
+                    column.sortable ? "cursor-pointer select-none" : ""
+                  }
+                  onClick={
+                    column.sortable
+                      ? () => handleSortClick(column.key)
+                      : undefined
+                  }
+                >
+                  <div className="flex items-center">
+                    {column.name}
+                    {column.sortable && getSortDirectionIcon(column.key)}
+                  </div>
+                </TableHead>
+              ))}
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {receipts.map((receipt) => {
+              const isSelected = selectedReceipts.includes(receipt.id);
 
-            return (
-              <TableRow
-                key={receipt.id}
-                className={cn(isSelected ? "bg-muted" : "")}
-              >
-                <TableCell>
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4"
-                    checked={isSelected}
-                    onChange={(e) =>
-                      onSelectReceipt(receipt.id, e.target.checked)
-                    }
-                  />
-                </TableCell>
-                <TableCell>{formatDate(receipt.date)}</TableCell>
-                <TableCell>{formatCurrency(receipt.amount)}</TableCell>
-                <TableCell title={receipt.pickupLocation || receipt.location}>
-                  {trimText(receipt.pickupLocation || receipt.location)}
-                </TableCell>
-                <TableCell title={receipt.dropoffLocation || ""}>
-                  {trimText(receipt.dropoffLocation)}
-                </TableCell>
-                <TableCell>{receipt.pickupTime || ""}</TableCell>
-                <TableCell>{receipt.dropoffTime || ""}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 py-1"
-                    onClick={() => handleDownload(receipt)}
-                  >
-                    <i className="bx bxs-download mr-1"></i>
-                    Download
-                  </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+              return (
+                <TableRow
+                  key={receipt.id}
+                  className={cn(isSelected ? "bg-muted" : "")}
+                >
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 cursor-pointer touch-manipulation"
+                      checked={isSelected}
+                      onChange={(e) =>
+                        onSelectReceipt(receipt.id, e.target.checked)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {formatDate(receipt.date)}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {formatCurrency(receipt.amount)}
+                  </TableCell>
+                  <TableCell title={receipt.pickupLocation || receipt.location}>
+                    {trimText(receipt.pickupLocation || receipt.location)}
+                  </TableCell>
+                  <TableCell title={receipt.dropoffLocation || ""}>
+                    {trimText(receipt.dropoffLocation)}
+                  </TableCell>
+                  <TableCell>{receipt.pickupTime || ""}</TableCell>
+                  <TableCell>{receipt.dropoffTime || ""}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-9 px-3 py-2 min-w-[100px]"
+                      onClick={() => handleDownload(receipt)}
+                    >
+                      <i className="bx bxs-download mr-1"></i>
+                      Download
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

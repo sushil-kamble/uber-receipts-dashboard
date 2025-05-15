@@ -13,7 +13,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 export function Header() {
   return (
     <header className="border-b h-16">
-      <div className="mx-auto container h-full">
+      <div className="mx-auto container px-1.5 md:px-0 h-full">
         <div className="flex items-center justify-between h-full">
           <Link href="/" className="text-xl font-bold flex items-center gap-2">
             <i className="bx bxs-receipt text-2xl"></i>
