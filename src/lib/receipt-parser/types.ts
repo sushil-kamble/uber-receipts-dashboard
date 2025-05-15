@@ -25,7 +25,8 @@ export interface ParsedReceipt extends Receipt {
   distance?: string;
   paymentMethod?: string;
   currency?: string;
-
+  type?: string;
+  status?: string;
   // Track the raw email ID for reference
   emailId: string;
 
