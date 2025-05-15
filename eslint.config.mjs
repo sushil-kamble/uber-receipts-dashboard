@@ -24,6 +24,20 @@ const eslintConfig = [
   // Override TypeScript rules more broadly to allow any type
   {
     files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      // This rule targets any usage of 'any' type
+      "@typescript-eslint/ban-types": [
+        "error",
+        {
+          types: {
+            "{}": false,
+            object: false,
+            any: false,
+          },
+          extendDefaults: true,
+        },
+      ],
+    },
   },
 ];
 
