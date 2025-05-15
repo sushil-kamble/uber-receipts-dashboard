@@ -5,6 +5,7 @@ import { Header } from "./Header";
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from "./Footer";
 import Provider from "./Provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,11 +49,6 @@ export const metadata: Metadata = {
       "Manage and organize your Uber receipts efficiently. Search, download, and export receipts with ease.",
     creator: "@yourusername",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
@@ -66,6 +62,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -74,20 +76,27 @@ export default function RootLayout({
   return (
     <Provider>
       <html lang="en" suppressHydrationWarning>
-        <head>
-          <link
-            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-            rel="stylesheet"
-          />
-        </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <Header />
-          <main className="container mx-auto flex-1">{children}</main>
-          <Footer />
-          <Toaster />
-        </body>
+          <head>
+            <link
+              href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+              rel="stylesheet"
+            />
+          </head>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+          >
+            <Header />
+            <main className="container mx-auto flex-1">{children}</main>
+            <Footer />
+            <Toaster />
+          </body>
+        </ThemeProvider>
       </html>
     </Provider>
   );

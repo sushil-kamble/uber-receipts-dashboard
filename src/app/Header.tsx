@@ -8,6 +8,7 @@ import {
   SignedIn,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Header() {
   return (
@@ -18,19 +19,22 @@ export function Header() {
             <i className="bx bxs-receipt text-2xl"></i>
             Uber Receipts
           </Link>
-          <ClerkLoading>
-            <div className="w-24 h-8 bg-gray-200 rounded-md animate-pulse"></div>
-          </ClerkLoading>
-          <ClerkLoaded>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button>Login</Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </ClerkLoaded>
+          <div className="flex items-center gap-4">
+            <ModeToggle />
+            <ClerkLoading>
+              <div className="w-24 h-8 bg-gray-200 rounded-md animate-pulse"></div>
+            </ClerkLoading>
+            <ClerkLoaded>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button>Login</Button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </ClerkLoaded>
+          </div>
         </div>
       </div>
     </header>
