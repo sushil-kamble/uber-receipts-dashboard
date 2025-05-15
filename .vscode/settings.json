@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true
+}
