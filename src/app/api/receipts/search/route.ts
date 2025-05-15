@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUserContext } from "../../_middleware/AuthMiddleware";
 import { z } from "zod";
-import { Receipt } from "@/app/receipts/types";
+import { Receipt } from "@/app/types";
 import { searchUberReceipts } from "@/lib/email-client";
 import { parseReceipts } from "@/lib/receipt-parser";
 import { getValidAccessToken } from "@/lib/auth/gmail-auth";

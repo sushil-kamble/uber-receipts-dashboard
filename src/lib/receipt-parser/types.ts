@@ -1,5 +1,5 @@
 import { RawEmailData } from "../email-client/types";
-import { Receipt } from "@/app/receipts/types";
+import { Receipt } from "@/app/types";
 
 /**
  * Interface for the receipt parser
