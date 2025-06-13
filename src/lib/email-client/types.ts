@@ -28,6 +28,7 @@ export interface RawEmailData {
     filename: string;
     mimeType: string;
     data?: string;
+    attachmentId?: string;
   }>;
 }
 

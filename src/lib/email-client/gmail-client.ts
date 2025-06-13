@@ -187,11 +187,17 @@ export class GmailClient implements EmailClientInterface {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extractAttachments(
     payload: any
-  ): Array<{ filename: string; mimeType: string; data?: string }> {
+  ): Array<{
+    filename: string;
+    mimeType: string;
+    data?: string;
+    attachmentId?: string;
+  }> {
     const attachments: Array<{
       filename: string;
       mimeType: string;
       data?: string;
+      attachmentId?: string;
     }> = [];
 
     // Function to check if part is an attachment
@@ -201,6 +207,7 @@ export class GmailClient implements EmailClientInterface {
         attachments.push({
           filename: part.filename,
           mimeType: part.mimeType,
+          attachmentId: part.body?.attachmentId, // Extract attachment ID for download
           // For now, we're not including the actual data to avoid huge payloads
         });
       }
@@ -217,5 +224,30 @@ export class GmailClient implements EmailClientInterface {
     }
 
     return attachments;
+  }
+
+  /**
+   * Create a download URL for a Gmail attachment
+   * This creates a URL that can be used to download the attachment via the Gmail API
+   */
+  createAttachmentDownloadUrl(messageId: string, attachmentId: string): string {
+    return `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/attachments/${attachmentId}`;
+  }
+
+  /**
+   * Get attachment data by ID
+   */
+  async getAttachment(messageId: string, attachmentId: string): Promise<any> {
+    try {
+      const response = await this.gmail.users.messages.attachments.get({
+        userId: "me",
+        messageId: messageId,
+        id: attachmentId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error getting attachment:", error);
+      throw new Error(`Failed to get attachment with ID: ${attachmentId}`);
+    }
   }
 }

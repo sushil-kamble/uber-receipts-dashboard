@@ -2,6 +2,7 @@ import { RawEmailData } from "../../../email-client/types";
 import { ReceiptParsingResult } from "../../../receipt-parser/types";
 import { RapidoReceiptData } from "../types";
 import { RapidoHtmlParser } from "./html-parser";
+import { generatePdfDownloadUrl } from "../../../utils/pdf-download";
 
 /**
  * Main Rapido receipt parser
@@ -39,6 +40,9 @@ export class RapidoParser {
         };
       }
 
+      // Generate PDF download URL
+      const pdfUrl = generatePdfDownloadUrl(email, "rapido-receipt.pdf");
+
       // Create complete receipt
       const receipt: RapidoReceiptData = {
         id: parsedData.id || parsedData.rideId || email.id,
@@ -56,7 +60,7 @@ export class RapidoParser {
         emailId: email.id,
         rawHtml: parsedData.rawHtml,
         rideId: parsedData.rideId || "",
-        pdfUrl: "https://mail.google.com/mail/u/0/#inbox/" + email.id,
+        pdfUrl: pdfUrl,
         customerName: parsedData.customerName,
         vehicleNumber: parsedData.vehicleNumber,
         vehicleType: parsedData.vehicleType,
@@ -113,6 +117,7 @@ export class RapidoParser {
       service: "Rapido",
       emailId,
       rideId: "",
+      pdfUrl: "https://mail.google.com/mail/u/0/#inbox/" + emailId,
     };
   }
 }
