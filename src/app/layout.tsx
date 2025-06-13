@@ -76,27 +76,29 @@ export default function RootLayout({
   return (
     <Provider>
       <html lang="en" suppressHydrationWarning>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        <head>
+          <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+          />
+        </head>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
         >
-          <head>
-            <link
-              href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-              rel="stylesheet"
-            />
-          </head>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
             <Header />
-            <main className="container mx-auto flex-1 px-1.5 md:px-0">{children}</main>
+            <main className="container mx-auto flex-1 px-1.5 md:px-0">
+              {children}
+            </main>
             <Footer />
             <Toaster />
-          </body>
-        </ThemeProvider>
+          </ThemeProvider>
+        </body>
       </html>
     </Provider>
   );
