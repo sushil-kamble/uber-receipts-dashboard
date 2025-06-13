@@ -5,12 +5,17 @@ export interface Receipt {
   id: string;
   date: string;
   amount: number;
+  currency?: string; // NEW: Support multiple currencies
   location: string;
   pickupLocation?: string;
   dropoffLocation?: string;
   pickupTime?: string;
   dropoffTime?: string;
   pdfUrl?: string; // PDF download link from email
+  service: string; // NEW: Which service (Uber, Rapido, etc.)
+  serviceId?: string; // NEW: Service-specific ID (tripId, rideId)
+  driverName?: string; // NEW: Driver information
+  vehicleInfo?: string; // NEW: Vehicle number/type
 }
 
 // Props for DateRangePicker component

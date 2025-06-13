@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createUserContext } from "../../_middleware/AuthMiddleware";
 import { z } from "zod";
 import { Receipt } from "@/app/types";
-import { searchUberReceipts } from "@/lib/email-client";
-import { parseReceipts } from "@/lib/receipt-parser";
 import { getValidAccessToken } from "@/lib/auth/gmail-auth";
+import {
+  ServiceRegistry,
+  ServiceType,
+  UberService,
+  RapidoService,
+} from "@/lib/services";
 
 // Input validation schema
 const searchParamsSchema = z.object({
@@ -72,54 +76,89 @@ export async function GET(request: NextRequest) {
       accessToken: accessToken,
     };
 
-    let receipts: Receipt[] = [];
+    // Initialize service registry
+    const serviceRegistry = new ServiceRegistry();
+    serviceRegistry.registerService(ServiceType.UBER, new UberService());
+    serviceRegistry.registerService(ServiceType.RAPIDO, new RapidoService());
 
-    // Search for Uber receipts in the user's email
-    const searchResults = await searchUberReceipts(
-      emailAuth,
-      startDateTime,
-      endDateTime,
-      maxResults
-    );
+    const allReceipts: Receipt[] = [];
 
-    // Parse emails to extract receipt data
-    if (searchResults.emails.length > 0) {
-      const parsingResults = await parseReceipts(searchResults.emails);
+    // Search each service
+    for (const service of serviceRegistry.getAllServices()) {
+      try {
+        const searchResults = await service.searchReceipts(
+          emailAuth,
+          startDateTime,
+          endDateTime,
+          maxResults
+        );
 
-      // Transform the parsed receipts to match the Receipt interface
-      receipts = parsingResults
-        .filter((result) => result.success)
-        .map((result) => {
-          // Extract relevant fields from ParsedReceipt to match Receipt interface
-          const {
-            id,
-            date,
-            amount,
-            location,
-            pickupLocation,
-            dropoffLocation,
-            pickupTime,
-            dropoffTime,
-            pdfUrl,
-          } = result.receipt;
-          return {
-            id,
-            date,
-            amount,
-            location,
-            pickupLocation,
-            dropoffLocation,
-            pickupTime,
-            dropoffTime,
-            pdfUrl,
-          };
-        });
+        if (searchResults.emails.length > 0) {
+          const parsingResults = await service.parseReceipts(
+            searchResults.emails
+          );
+
+          const serviceReceipts = parsingResults
+            .filter((result) => result.success)
+            .map((result) => {
+              // Transform to Receipt interface
+              const {
+                id,
+                date,
+                amount,
+                currency,
+                location,
+                pickupLocation,
+                dropoffLocation,
+                pickupTime,
+                dropoffTime,
+                pdfUrl,
+                service: serviceName,
+                serviceId,
+                driverName,
+                vehicleInfo,
+              } = result.receipt;
+
+              return {
+                id,
+                date,
+                amount,
+                currency,
+                location,
+                pickupLocation,
+                dropoffLocation,
+                pickupTime,
+                dropoffTime,
+                pdfUrl,
+                service: serviceName,
+                serviceId,
+                driverName,
+                vehicleInfo,
+              };
+            });
+
+          allReceipts.push(...serviceReceipts);
+        }
+      } catch (error) {
+        console.warn(
+          `Failed to search ${service.serviceName} receipts:`,
+          error
+        );
+        // Continue with other services
+      }
     }
+
+    // Sort all receipts by date (newest first)
+    allReceipts.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
 
     return NextResponse.json({
       success: true,
-      message: `Found ${receipts.length} Uber receipts`,
-      data: receipts,
+      message: `Found ${
+        allReceipts.length
+      } receipts from ${serviceRegistry.getServiceCount()} services`,
+      data: allReceipts,
     });
   } catch (error: any) {
     console.error("Error in receipts search API:", error);

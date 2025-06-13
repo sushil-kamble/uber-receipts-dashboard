@@ -9,6 +9,7 @@ import {
 
 /**
  * Search for Uber receipts in a user's email account
+ * @deprecated Use UberService from @/lib/services instead
  */
 export async function searchUberReceipts(
   auth: EmailAuthConfig,

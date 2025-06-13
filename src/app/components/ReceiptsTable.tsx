@@ -38,6 +38,7 @@ export default function ReceiptsTable({
   const columns = [
     { key: "date" as keyof Receipt, name: "Date", sortable: true },
     { key: "amount" as keyof Receipt, name: "Amount", sortable: true },
+    { key: "service" as keyof Receipt, name: "Service", sortable: true },
     {
       key: "pickupLocation" as keyof Receipt,
       name: "Pick Up Location",
@@ -123,6 +124,9 @@ export default function ReceiptsTable({
                   </TableCell>
                   <TableCell>
                     <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-20 bg-muted rounded animate-pulse"></div>
                   </TableCell>
                   <TableCell>
                     <div className="h-4 w-32 bg-muted rounded animate-pulse"></div>
@@ -223,6 +227,9 @@ export default function ReceiptsTable({
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {formatCurrency(receipt.amount)}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {receipt.service}
                   </TableCell>
                   <TableCell title={receipt.pickupLocation || receipt.location}>
                     {trimText(receipt.pickupLocation || receipt.location)}

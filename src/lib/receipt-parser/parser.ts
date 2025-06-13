@@ -34,6 +34,7 @@ export class UberReceiptParser implements ReceiptParserInterface {
         date: this.extractDateFromEmail(email),
         amount: 0,
         location: "Unknown",
+        service: "Uber",
         type: "Uber Receipt",
         status: "Processed",
       };
@@ -80,6 +81,7 @@ export class UberReceiptParser implements ReceiptParserInterface {
         date: this.extractDateFromEmail(email),
         amount: 0,
         location: "Unknown",
+        service: "Uber",
         type: "Uber Receipt",
         status: "Error",
       };
@@ -110,6 +112,7 @@ export class UberReceiptParser implements ReceiptParserInterface {
             date: this.extractDateFromEmail(email),
             amount: 0,
             location: "Unknown",
+            service: "Uber",
             type: "Uber Receipt",
             status: "Error",
           },
