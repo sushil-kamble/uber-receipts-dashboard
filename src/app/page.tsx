@@ -179,7 +179,7 @@ export default function ReceiptsPage() {
           <i className="bx bxs-lock-alt text-5xl mb-4 text-muted-foreground"></i>
           <h2 className="text-2xl font-semibold mb-3">Sign in to continue</h2>
           <p className="text-muted-foreground mb-6">
-            Please sign in to connect your Gmail account and view your Uber
+            Please sign in to connect your Gmail account and view your cab
             receipts.
           </p>
           <SignInButton mode="modal">
@@ -199,8 +199,7 @@ export default function ReceiptsPage() {
         {isGmailConnected && (
           <>
             {/* Date Range Picker Section */}
-            <div className="mb-5 bg-card rounded-lg shadow p-4">
-              <h2 className="text-lg font-semibold mb-3">Select Date Range</h2>
+            <div className="mb-5 bg-card rounded-lg shadow p-4 flex flex-row items-center justify-between">
               <DateRangePicker
                 dateRange={dateRange}
                 setDateRange={(range: DateRange) => {
@@ -211,11 +210,11 @@ export default function ReceiptsPage() {
                   });
                 }}
               />
-              <div className="mt-4 flex items-center">
+              <div className="flex items-center space-x-2">
                 <Button
                   onClick={handleSearch}
                   disabled={!dateRange.from || !dateRange.to || isLoading}
-                  className="mr-2 flex items-center gap-1"
+                  className="flex items-center gap-1"
                 >
                   <i
                     className={`bx ${

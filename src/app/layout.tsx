@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Uber Receipts Dashboard",
+  title: "Cab Receipts Dashboard",
   description:
-    "Manage and organize your Uber receipts efficiently. Search, download, and export receipts with ease.",
+    "Manage and organize your cab receipts efficiently. Search, download, and export receipts with ease.",
   generator: "Next.js",
-  applicationName: "Uber Receipts Dashboard",
-  keywords: ["uber", "receipts", "dashboard", "expense management"],
+  applicationName: "Cab Receipts Dashboard",
+  keywords: ["cab", "receipts", "dashboard", "expense management"],
   authors: [{ name: "Your Name" }],
   creator: "Your Name",
   publisher: "Your Name",
@@ -34,19 +34,19 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
   openGraph: {
-    title: "Uber Receipts Dashboard",
+    title: "Cab Receipts Dashboard",
     description:
-      "Manage and organize your Uber receipts efficiently. Search, download, and export receipts with ease.",
+      "Manage and organize your cab receipts efficiently. Search, download, and export receipts with ease.",
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: "Uber Receipts Dashboard",
+    siteName: "Cab Receipts Dashboard",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Uber Receipts Dashboard",
+    title: "Cab Receipts Dashboard",
     description:
-      "Manage and organize your Uber receipts efficiently. Search, download, and export receipts with ease.",
+      "Manage and organize your cab receipts efficiently. Search, download, and export receipts with ease.",
     creator: "@yourusername",
   },
   robots: {

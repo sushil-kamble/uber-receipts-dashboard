@@ -1,12 +1,12 @@
-# Uber Receipts
+# Cab Receipts
 
-A Next.js application that helps you track and analyze your Uber receipts by connecting to your Gmail account and automatically extracting receipt data.
+A Next.js application that helps you track and analyze your cab receipts by connecting to your Gmail account and automatically extracting receipt data.
 
 ## Features
 
 - ⚡ Next.js 15 with App Router
 - 🔒 Authentication with Clerk
-- 📧 Gmail API integration to fetch Uber receipts
+- 📧 Gmail API integration to fetch cab receipts
 - 📊 Receipt data extraction and parsing
 - 📅 Date range filtering
 - 📊 Receipt statistics and analytics
@@ -21,7 +21,7 @@ A Next.js application that helps you track and analyze your Uber receipts by con
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd uber-receipts
+   cd cab-receipts
    ```
 
 2. Install dependencies:
@@ -58,14 +58,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - `/src/db` - Database configuration and schema
 - `/src/lib` - Utility functions and shared logic
   - `/src/lib/email-client` - Gmail API integration
-  - `/src/lib/receipt-parser` - Uber receipt parsing logic
+  - `/src/lib/receipt-parser` - cab receipt parsing logic
 - `/src/types` - TypeScript type definitions
 
 ## How It Works
 
 1. Sign in with Clerk authentication
 2. Connect your Gmail account
-3. Select a date range to search for Uber receipts
+3. Select a date range to search for cab receipts
 4. View and analyze your receipt data
 5. Export or manage your receipt information
 

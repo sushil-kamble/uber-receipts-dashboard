@@ -17,7 +17,7 @@ export function Header() {
         <div className="flex items-center justify-between h-full">
           <Link href="/" className="text-xl font-bold flex items-center gap-2">
             <i className="bx bxs-receipt text-2xl"></i>
-            Uber Receipts
+            Cab Receipts
           </Link>
           <div className="flex items-center gap-4">
             <ModeToggle />

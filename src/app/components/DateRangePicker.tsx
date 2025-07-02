@@ -26,13 +26,6 @@ export default function DateRangePicker({
   }, [dateRange]);
 
   // Predefined date ranges
-  const last7Days = () => {
-    const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - 7);
-    setDateRange({ from, to });
-  };
-
   const last30Days = () => {
     const to = new Date();
     const from = new Date();
@@ -48,7 +41,7 @@ export default function DateRangePicker({
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-row items-center space-x-4">
       <div className="grid gap-2">
         <Popover>
           <PopoverTrigger asChild>
@@ -56,7 +49,7 @@ export default function DateRangePicker({
               id="date"
               variant={"outline"}
               className={cn(
-                "w-full md:w-auto justify-start text-left font-normal",
+                "w-auto justify-start text-left font-normal",
                 !date.from && "text-muted-foreground"
               )}
             >
@@ -96,14 +89,6 @@ export default function DateRangePicker({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={last7Days}
-          className="text-xs"
-        >
-          Last 7 Days
-        </Button>
         <Button
           variant="outline"
           size="sm"

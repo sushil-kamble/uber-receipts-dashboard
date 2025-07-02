@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plan outlines the implementation of adding Rapido receipt service alongside the existing Uber service, while refactoring the codebase to support an extensible multi-service architecture for easy addition of new receipt services in the future.
+This plan outlines the implementation of adding Rapido receipt service alongside the existing Cab service, while refactoring the codebase to support an extensible multi-service architecture for easy addition of new receipt services in the future.
 
 ## Current Architecture Analysis
 

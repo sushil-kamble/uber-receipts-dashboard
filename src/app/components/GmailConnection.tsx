@@ -95,7 +95,6 @@ export default function GmailConnection({
 
   return (
     <div className="flex flex-col mb-5 bg-card rounded-lg shadow p-4">
-      <h2 className="text-lg font-semibold mb-1.5">Gmail Connection</h2>
       <div className="flex items-center">
         <div className="flex-1">
           {isLoading ? (
@@ -137,8 +136,8 @@ export default function GmailConnection({
       </div>
       <p className="text-xs text-muted-foreground">
         {isConnected
-          ? "Your Gmail account is connected. You can now search for Uber receipts in your inbox."
-          : "Connect your Gmail account to search for Uber receipts in your inbox."}
+          ? "Your Gmail account is connected. You can now search for cab receipts in your inbox."
+          : "Connect your Gmail account to search for cab receipts in your inbox."}
       </p>
     </div>
   );
