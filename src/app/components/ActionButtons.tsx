@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ActionButtonsProps } from "../types";
 import { toast } from "sonner";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { createReceiptFromSelection } from "@/lib/receiptUtils";
 
 export default function ActionButtons({
   hasReceipts,
@@ -39,6 +40,10 @@ export default function ActionButtons({
     });
 
     toast.success(`Downloaded ${receiptWithPdfs.length} receipts`);
+  };
+
+  const handleCreateReceipt = () => {
+    createReceiptFromSelection(selectedReceipts, receipts);
   };
 
   const handleCopy = () => {
@@ -105,6 +110,19 @@ export default function ActionButtons({
 
   return (
     <div className="flex flex-wrap gap-3">
+      <Button
+        variant="default"
+        size="sm"
+        className="flex items-center gap-1"
+        disabled={!hasSelection}
+        onClick={handleCreateReceipt}
+      >
+        <i className="bx bx-receipt text-base"></i>
+        <span>
+          Create Receipt {hasSelection ? `(${selectedReceipts.length})` : ""}
+        </span>
+      </Button>
+
       <Button
         variant="outline"
         size="sm"

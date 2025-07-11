@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Receipt, SortConfig } from "./types";
 import { DateRange } from "react-day-picker";
 import ReceiptsTable from "./components/ReceiptsTable";
@@ -12,6 +13,7 @@ import GmailConnection from "./components/GmailConnection";
 import ReceiptStatistics from "./components/ReceiptStatistics";
 import { toast } from "sonner";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { createReceiptFromSelection } from "@/lib/receiptUtils";
 
 export default function ReceiptsPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,11 +24,13 @@ export default function ReceiptsPage() {
   }>(() => {
     const to = new Date();
     const from = new Date();
-    from.setDate(from.getDate() - 7);
+    from.setDate(from.getDate() - 30);
     return { from, to };
   });
 
   const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [pickupFilter, setPickupFilter] = useState<string>("");
+  const [dropoffFilter, setDropoffFilter] = useState<string>("");
   const [selectedReceipts, setSelectedReceipts] = useState<string[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -85,28 +89,49 @@ export default function ReceiptsPage() {
     toast.success(`Deleted ${selectedReceipts.length} receipt(s) successfully`);
   };
 
-  // Apply client-side sorting
-  const sortedReceipts = [...receipts].sort((a, b) => {
-    if (!sortConfig.column) return 0;
+  const handleCreateReceipt = () => {
+    createReceiptFromSelection(selectedReceipts, receipts);
+  };
 
-    const column = sortConfig.column;
-    const direction = sortConfig.direction;
+  // Apply client-side filtering and sorting
+  const filteredAndSortedReceipts = [...receipts]
+    .filter((receipt) => {
+      const pickupMatch =
+        !pickupFilter ||
+        receipt.pickupLocation
+          ?.toLowerCase()
+          .includes(pickupFilter.toLowerCase()) ||
+        receipt.location?.toLowerCase().includes(pickupFilter.toLowerCase());
 
-    if (column === "amount") {
-      // Numeric sort for amounts
+      const dropoffMatch =
+        !dropoffFilter ||
+        receipt.dropoffLocation
+          ?.toLowerCase()
+          .includes(dropoffFilter.toLowerCase());
+
+      return pickupMatch && dropoffMatch;
+    })
+    .sort((a, b) => {
+      if (!sortConfig.column) return 0;
+
+      const column = sortConfig.column;
+      const direction = sortConfig.direction;
+
+      if (column === "amount") {
+        // Numeric sort for amounts
+        return direction === "asc"
+          ? a[column] - b[column]
+          : b[column] - a[column];
+      }
+
+      // String sort for everything else
+      const aValue = String(a[column]);
+      const bValue = String(b[column]);
+
       return direction === "asc"
-        ? a[column] - b[column]
-        : b[column] - a[column];
-    }
-
-    // String sort for everything else
-    const aValue = String(a[column]);
-    const bValue = String(b[column]);
-
-    return direction === "asc"
-      ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue);
-  });
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
 
   // Check Gmail connection status on component mount
   useEffect(() => {
@@ -117,6 +142,10 @@ export default function ReceiptsPage() {
 
         if (data.success) {
           setIsGmailConnected(data.data.isConnected);
+          // Auto-search on page load if Gmail is connected
+          if (data.data.isConnected && dateRange.from && dateRange.to) {
+            handleSearch();
+          }
         }
       } catch (error) {
         console.error("Error checking Gmail connection:", error);
@@ -124,15 +153,17 @@ export default function ReceiptsPage() {
     }
 
     checkGmailConnection();
-  }, []);
+  }, [dateRange.from, dateRange.to]);
+
+  // Watch for Gmail connection changes and auto-search
+  useEffect(() => {
+    if (isGmailConnected && dateRange.from && dateRange.to) {
+      handleSearch();
+    }
+  }, [isGmailConnected]);
 
   const handleSearch = async () => {
     if (!dateRange.from || !dateRange.to) {
-      return;
-    }
-
-    if (!isGmailConnected) {
-      toast.error("Please connect your Gmail account first");
       return;
     }
 
@@ -194,61 +225,114 @@ export default function ReceiptsPage() {
       <SignedIn>
         {/* Gmail Connection Section */}
         <GmailConnection onConnectionChange={setIsGmailConnected} />
-
         {/* Show the rest of the UI only when Gmail is connected */}
         {isGmailConnected && (
           <>
-            {/* Date Range Picker Section */}
-            <div className="mb-5 bg-card rounded-lg shadow p-4 flex flex-row items-center justify-between">
-              <DateRangePicker
-                dateRange={dateRange}
-                setDateRange={(range: DateRange) => {
-                  // Handle the type conversion from DateRange to our state type
-                  setDateRange({
-                    from: range?.from,
-                    to: range?.to || undefined,
-                  });
-                }}
-              />
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={handleSearch}
-                  disabled={!dateRange.from || !dateRange.to || isLoading}
-                  className="flex items-center gap-1"
-                >
-                  <i
-                    className={`bx ${
-                      isLoading ? "bx-loader-alt animate-spin" : "bx-search"
-                    }`}
-                  ></i>
-                  <span>{isLoading ? "Searching..." : "Search Receipts"}</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setDateRange({ from: undefined, to: undefined })
-                  }
-                  className="flex items-center gap-1"
-                >
-                  <i className="bx bx-reset"></i>
-                  <span>Reset</span>
-                </Button>
+            {/* Date Range Picker Section with Filters */}
+            <div className="mb-5 bg-card rounded-lg shadow p-4">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                <div className="flex-1">
+                  <DateRangePicker
+                    dateRange={dateRange}
+                    setDateRange={(range: DateRange) => {
+                      // Handle the type conversion from DateRange to our state type
+                      setDateRange({
+                        from: range?.from,
+                        to: range?.to || undefined,
+                      });
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <Button
+                    onClick={handleSearch}
+                    disabled={!dateRange.from || !dateRange.to || isLoading}
+                    className="flex items-center justify-center gap-1"
+                  >
+                    <i
+                      className={`bx ${
+                        isLoading ? "bx-loader-alt animate-spin" : "bx-search"
+                      }`}
+                    ></i>
+                    <span>
+                      {isLoading ? "Searching..." : "Search Receipts"}
+                    </span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setDateRange({ from: undefined, to: undefined })
+                    }
+                    className="flex items-center justify-center gap-1"
+                  >
+                    <i className="bx bx-reset"></i>
+                    <span>Reset</span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Filters Section */}
+              <div className="border-t pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Filter by pickup location..."
+                      value={pickupFilter}
+                      onChange={(e) => setPickupFilter(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Filter by drop location..."
+                      value={dropoffFilter}
+                      onChange={(e) => setDropoffFilter(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setPickupFilter("");
+                      setDropoffFilter("");
+                    }}
+                    className="flex items-center justify-center gap-1 sm:w-auto w-full"
+                    disabled={!pickupFilter && !dropoffFilter}
+                  >
+                    <i className="bx bx-x"></i>
+                    Clear Filters
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* Statistics Section */}
             {(receipts.length > 0 || isLoading) && (
               <ReceiptStatistics
-                receipts={sortedReceipts}
+                receipts={filteredAndSortedReceipts}
                 isLoading={isLoading}
               />
             )}
 
             {/* Results Table Section */}
             <div className="mb-5 bg-card rounded-lg shadow p-4">
-              <h2 className="text-lg font-semibold mb-3">Receipt Results</h2>
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-semibold">Receipt Results</h2>
+                <Button
+                  className="flex items-center gap-1"
+                  disabled={selectedReceipts.length === 0}
+                  onClick={handleCreateReceipt}
+                >
+                  <i className="bx bx-receipt text-base"></i>
+                  Create Receipt{" "}
+                  {selectedReceipts.length > 0
+                    ? `(${selectedReceipts.length})`
+                    : ""}
+                </Button>
+              </div>
               <ReceiptsTable
-                receipts={sortedReceipts}
+                receipts={filteredAndSortedReceipts}
                 isLoading={isLoading}
                 selectedReceipts={selectedReceipts}
                 onSelectReceipt={handleSelectReceipt}
@@ -263,7 +347,7 @@ export default function ReceiptsPage() {
               <ActionButtons
                 hasReceipts={receipts.length > 0}
                 selectedReceipts={selectedReceipts}
-                receipts={sortedReceipts}
+                receipts={filteredAndSortedReceipts}
                 onDelete={handleOpenDeleteDialog}
               />
             </div>
