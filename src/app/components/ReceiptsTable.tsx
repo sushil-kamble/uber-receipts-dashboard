@@ -253,9 +253,16 @@ export default function ReceiptsTable({
                         variant="ghost"
                         size="sm"
                         className="h-9 px-3 py-2"
-                        onClick={() => window.open(receipt.gmailUrl!, "_blank")}
+                        asChild
                       >
-                        <i className="bx bxl-gmail"></i>
+                        <a
+                          href={receipt.gmailUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="View email in Gmail"
+                        >
+                          <i className="bx bxl-gmail"></i>
+                        </a>
                       </Button>
                     )}
                   </TableCell>

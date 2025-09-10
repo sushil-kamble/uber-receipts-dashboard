@@ -76,6 +76,23 @@ export async function GET(request: NextRequest) {
       accessToken: accessToken,
     };
 
+    // Get the connected Gmail account's email address for authuser param
+    let gmailAccountEmail: string | null = null;
+    try {
+      const profileResponse = await fetch(
+        "https://gmail.googleapis.com/gmail/v1/users/me/profile",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        gmailAccountEmail = profileData.emailAddress;
+      }
+    } catch (err) {
+      console.warn("Failed to fetch Gmail profile:", err);
+    }
+
     // Initialize service registry
     const serviceRegistry = new ServiceRegistry();
     serviceRegistry.registerService(ServiceType.UBER, new UberService());
@@ -131,7 +148,11 @@ export async function GET(request: NextRequest) {
                 pickupTime,
                 dropoffTime,
                 pdfUrl,
-                gmailUrl: `https://mail.google.com/mail/u/0/#inbox/${emailId}`,
+                gmailUrl: gmailAccountEmail
+                  ? `https://mail.google.com/mail/?authuser=${encodeURIComponent(
+                      gmailAccountEmail
+                    )}#all/${emailId}`
+                  : `https://mail.google.com/mail/u/0/#all/${emailId}`,
                 service: serviceName,
                 serviceId,
                 driverName,
