@@ -55,6 +55,11 @@ export default function ReceiptsTable({
       sortable: true,
     },
     { key: "dropoffTime" as keyof Receipt, name: "Drop Time", sortable: true },
+    {
+      key: "gmailUrl" as keyof Receipt,
+      name: "Email",
+      sortable: false,
+    },
   ];
 
   // Handle column header click for sorting
@@ -139,6 +144,9 @@ export default function ReceiptsTable({
                   </TableCell>
                   <TableCell>
                     <div className="h-4 w-16 bg-muted rounded animate-pulse"></div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="h-8 w-24 bg-muted rounded animate-pulse ml-auto"></div>
@@ -239,6 +247,18 @@ export default function ReceiptsTable({
                   </TableCell>
                   <TableCell>{receipt.pickupTime || ""}</TableCell>
                   <TableCell>{receipt.dropoffTime || ""}</TableCell>
+                  <TableCell className="text-center">
+                    {receipt.gmailUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-9 px-3 py-2"
+                        onClick={() => window.open(receipt.gmailUrl!, "_blank")}
+                      >
+                        <i className="bx bxl-gmail"></i>
+                      </Button>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="ghost"
