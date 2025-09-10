@@ -12,6 +12,7 @@ export interface Receipt {
   pickupTime?: string;
   dropoffTime?: string;
   pdfUrl?: string; // PDF download link from email
+  gmailUrl?: string; // Direct link to view the email in Gmail
   service: string; // NEW: Which service (Uber, Rapido, etc.)
   serviceId?: string; // NEW: Service-specific ID (tripId, rideId)
   driverName?: string; // NEW: Driver information
