@@ -14,6 +14,13 @@ export function createReceiptFromSelection(
     selectedReceipts.includes(receipt.id)
   );
 
+  // Sort receipts by date in ascending order
+  const sortedReceiptObjects = selectedReceiptObjects
+    .slice()
+    .sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
   if (selectedReceiptObjects.length === 0) {
     toast.error("No receipts selected");
     return;
@@ -23,7 +30,7 @@ export function createReceiptFromSelection(
   const headers = ["Date", "Amount"].join("\t");
 
   // Format each receipt with date logic (if pickup after 12 AM, use previous date)
-  const rows = selectedReceiptObjects.map((receipt) => {
+  const rows = sortedReceiptObjects.map((receipt) => {
     let receiptDate = new Date(receipt.date);
 
     // If pickup time is available and after midnight, use previous date
@@ -40,7 +47,7 @@ export function createReceiptFromSelection(
   });
 
   // Calculate total amount
-  const totalAmount = selectedReceiptObjects.reduce(
+  const totalAmount = sortedReceiptObjects.reduce(
     (sum, receipt) => sum + receipt.amount,
     0
   );
