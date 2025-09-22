@@ -80,8 +80,8 @@ export default function ReceiptStatistics({
               <p className="text-sm text-muted-foreground">Total Trips</p>
               <h3 className="text-2xl font-bold">{stats.totalTrips}</h3>
             </div>
-            <div className="text-primary">
-              <i className="bx bx-trip text-3xl"></i>
+            <div className="text-primary text-3xl" aria-hidden>
+              🚗
             </div>
           </div>
         </div>
@@ -94,8 +94,8 @@ export default function ReceiptStatistics({
                 {formatCurrency(stats.totalAmount)}
               </h3>
             </div>
-            <div className="text-primary">
-              <i className="bx bx-dollar-circle text-3xl"></i>
+            <div className="text-primary text-3xl" aria-hidden>
+              💰
             </div>
           </div>
         </div>
@@ -108,8 +108,8 @@ export default function ReceiptStatistics({
                 {formatCurrency(stats.avgAmount)}
               </h3>
             </div>
-            <div className="text-primary">
-              <i className="bx bx-line-chart text-3xl"></i>
+            <div className="text-primary text-3xl" aria-hidden>
+              📈
             </div>
           </div>
         </div>
