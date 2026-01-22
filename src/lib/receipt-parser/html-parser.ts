@@ -104,6 +104,8 @@ export class UberHtmlParser implements HtmlParserInterface {
         /<tr><td[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td><\/tr>/i,
         /<td[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td>/i,
         /<td[^>]*class="[^"]*Uber18_text_p2[^"]*"[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td>/i,
+        // Pattern for new Uber format with address-point-desc class (2026 format)
+        /<td[^>]*class="[^"]*address-point-desc[^"]*"[^>]*>([^<]+)<\/td>/i,
       ];
 
       // Array to hold possible pickup locations
@@ -139,6 +141,8 @@ export class UberHtmlParser implements HtmlParserInterface {
         /<tr><td[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td><\/tr>/i,
         /<td[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td>/i,
         /<td[^>]*class="[^"]*Uber18_text_p2[^"]*"[^>]*>(\d{1,2}:\d{2}\s*[AP]M)<\/td><\/tr><tr><td[^>]*class="[^"]*Uber18_text_p1[^"]*"[^>]*>(.*?)<\/td>/i,
+        // Pattern for new Uber format with address-point-desc class (2026 format)
+        /<td[^>]*class="[^"]*address-point-desc[^"]*"[^>]*>([^<]+)<\/td>/i,
       ];
 
       // Array to hold possible dropoff locations
