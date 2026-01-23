@@ -65,6 +65,7 @@ export default function ActionButtons({
       "Drop Location",
       "Pick Up Time",
       "Drop Time",
+      "Email",
     ].join("\t");
 
     // Format each receipt as a tab-separated row
@@ -76,6 +77,7 @@ export default function ActionButtons({
         receipt.dropoffLocation || "",
         receipt.pickupTime || "",
         receipt.dropoffTime || "",
+        receipt.gmailUrl || "",
       ].join("\t");
     });
 
@@ -86,7 +88,7 @@ export default function ActionButtons({
     );
 
     // Add total row
-    const totalRow = ["TOTAL", totalAmount, "", "", "", ""].join("\t");
+    const totalRow = ["TOTAL", totalAmount, "", "", "", "", ""].join("\t");
 
     // Combine headers, data rows, and total row
     const copyText = [headers, ...rows, "", totalRow].join("\n");
